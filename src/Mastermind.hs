@@ -42,9 +42,4 @@ answers guess code = (b, w)
     countColors xs = map ((\fn -> fn xs) . count . (==)) allColors
 
 count :: (a -> Bool) -> [a] -> Int
-count p = go 0
-  where
-    go n [] = n
-    go n (x : xs)
-      | p x = go (n + 1) xs
-      | otherwise = go n xs
+count p = foldr (\x -> if p x then (1+) else id) 0
