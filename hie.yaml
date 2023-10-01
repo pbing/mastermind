@@ -1,10 +1,10 @@
 cradle:
   cabal:
     - path: "src"
-      component: "mastermind:lib:mastermind"
+      component: "lib:mastermind"
 
     - path: "app"
-      component: "mastermind:exe:mastermind"
+      component: "exe:mastermind"
 
     - path: "test"
-      component: "mastermind:test:mastermind-test"
+      component: "test:mastermind-test"
