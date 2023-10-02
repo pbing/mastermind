@@ -1,7 +1,5 @@
 module Mastermind where
 
-import Data.List
-
 type Peg = Int
 
 type Answer = (Int, Int) -- (number of correct positions, number of correct colors)
@@ -18,18 +16,10 @@ allPossibilities :: [[Peg]]
 allPossibilities = [[a, b, c, d] | a <- allColors, b <- allColors, c <- allColors, d <- allColors]
 
 legalPossibilities :: State -> [[Peg]] -> [[Peg]]
-legalPossibilities state = checkResult . filter legal
+legalPossibilities (guess, ans) = filter legal
   where
-    legal' :: State -> [Peg] -> Bool
-    legal' (guess, ans) x = answers guess x == ans
     legal :: [Peg] -> Bool
-    legal = legal' state
-
-checkResult :: [[Peg]] -> [[Peg]]
-checkResult xs =
-  if null xs
-    then error "Should not happen"
-    else xs
+    legal xs = answers guess xs == ans
 
 -- https://mathworld.wolfram.com/Mastermind.html
 answers :: [Peg] -> [Peg] -> Answer
@@ -41,5 +31,6 @@ answers guess code = (b, w)
     gi = countColors guess
     countColors xs = map ((\fn -> fn xs) . count . (==)) allColors
 
+-- return number of list elements when predicate is true
 count :: (a -> Bool) -> [a] -> Int
-count p = foldr (\x -> if p x then (1+) else id) 0
+count p = length . filter p
