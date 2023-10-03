@@ -1,15 +1,14 @@
 module Random where
 
 import Control.Monad
-import System.Random.Stateful
-
 import Mastermind
+import System.Random.Stateful
 
 newSecret :: IO [Peg]
 newSecret = replicateM 4 $ randomRIO colorRange
 
 initialGuessRandom :: IO [Peg]
-initialGuessRandom = replicateM 4 $ randomRIO colorRange
+initialGuessRandom = newSecret
 
 initialGuessPairs :: IO [Peg]
 initialGuessPairs = do
@@ -26,8 +25,12 @@ initialGuessQuads = do
 
 initialGuessAllDifferent :: IO [Peg]
 initialGuessAllDifferent = do
-  [r1, r2, r3, r4] <- replicateM 4 $ randomRIO colorRange
-  if r1 /= r2 && r1 /= r3 && r1 /= r4 &&
-    r2 /= r3 && r2 /= r4 && r3 /= r4
+  [r1, r2, r3, r4] <- newSecret
+  if r1 /= r2
+    && r1 /= r3
+    && r1 /= r4
+    && r2 /= r3
+    && r2 /= r4
+    && r3 /= r4
     then return [r1, r2, r3, r4]
     else initialGuessAllDifferent
