@@ -76,13 +76,13 @@ prop_solve1 =
   forAll genPegs $ \guess ->
   forAll genPegs $ \secret ->
   let res = solve1 guess secret
-  in fst res == secret && snd res <= snd colorRange ^ 4
+  in counterexample ("res = " ++ show res) $ fst res == secret && snd res <= snd colorRange ^ 4
 
 prop_solve2 =
   forAll genPegs $ \guess ->
   forAll genPegs $ \secret ->
   let res = solve2 guess secret
-  in fst res == secret && snd res <= 9
+  in counterexample ("res = " ++ show res) $ fst res == secret && snd res <= 9
 
 genPegs :: Gen [Peg]
 genPegs = vectorOf 4 (choose colorRange)
