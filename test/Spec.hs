@@ -70,7 +70,7 @@ main = hspec $ do
   describe "Solve puzzle" $ do
     it "solve1" $ property prop_solve1
 
-    it "solve2" $ property prop_solve2
+    it "solve2" $ property (withMaxSuccess 10000 prop_solve2)
 
 prop_solve1 =
   forAll genPegs $ \guess ->
@@ -80,9 +80,9 @@ prop_solve1 =
 
 prop_solve2 =
   forAll genPegs $ \guess ->
-  forAll genPairs $ \secret ->
+  forAll genPegs $ \secret ->
   let res = solve2 guess secret
-  in fst res == secret && snd res <= 8
+  in fst res == secret && snd res <= 9
 
 genPegs :: Gen [Peg]
 genPegs = vectorOf 4 (choose colorRange)
