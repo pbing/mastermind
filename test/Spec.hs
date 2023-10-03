@@ -72,15 +72,23 @@ main = hspec $ do
 
     it "solve2" $ property prop_solve2
 
-genPegs :: Gen [Peg]
-genPegs = vectorOf 4 (choose colorRange)
-
 prop_solve1 =
   forAll genPegs $ \guess ->
   forAll genPegs $ \secret ->
-  fst (solve1 guess secret) === secret
+  let res = solve1 guess secret
+  in fst res == secret && snd res <= snd colorRange ^ 4
 
 prop_solve2 =
   forAll genPegs $ \guess ->
-  forAll genPegs $ \secret ->
-  fst (solve2 guess secret) === secret
+  forAll genPairs $ \secret ->
+  let res = solve2 guess secret
+  in fst res == secret && snd res <= 8
+
+genPegs :: Gen [Peg]
+genPegs = vectorOf 4 (choose colorRange)
+
+genPairs :: Gen [Peg]
+genPairs = do
+  a <- choose colorRange
+  b <- choose colorRange
+  return [a, a, b, b]
