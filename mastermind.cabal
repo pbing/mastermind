@@ -42,4 +42,5 @@ test-suite mastermind-test
     main-is:          Spec.hs
     build-depends:    base,
                       hspec,
+                      QuickCheck,
                       mastermind

@@ -1,8 +1,9 @@
 module Main (main) where
 
-import Test.Hspec
-
 import Mastermind
+import Solve
+import Test.Hspec
+import Test.QuickCheck
 
 main :: IO ()
 main = hspec $ do
@@ -65,3 +66,21 @@ main = hspec $ do
           [2, 1, 2, 1]
         ]
         `shouldBe` [[2, 1, 2, 1]]
+
+  describe "Solve puzzle" $ do
+    it "solve1" $ property prop_solve1
+
+    it "solve2" $ property prop_solve2
+
+genPegs :: Gen [Peg]
+genPegs = vectorOf 4 (choose colorRange)
+
+prop_solve1 =
+  forAll genPegs $ \guess ->
+  forAll genPegs $ \secret ->
+  fst (solve1 guess secret) === secret
+
+prop_solve2 =
+  forAll genPegs $ \guess ->
+  forAll genPegs $ \secret ->
+  fst (solve2 guess secret) === secret
