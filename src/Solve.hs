@@ -3,30 +3,24 @@ module Solve where
 import Mastermind
 
 -- Brute force, ignore the answers and go through all possible states.
--- This takes 648.5 iterations on average.
+-- This takes maximum 1296 iterations.
 solve1 :: [Peg] -> [Peg] -> ([Peg], Int)
-solve1 _ secret = solve1' (head allPossibilities) (tail allPossibilities) 1
+solve1 _ secret = go allPossibilities 1
   where
-    solve1' :: [Peg] -> [[Peg]] -> Int -> ([Peg], Int)
-    solve1' g legal acc
-      | solved ans = (g, acc)
-      | otherwise = solve1' g' legal' (acc + 1)
-      where
-        ans = answers g secret
-        g' = head legal
-        legal' = tail legal
+    go (x:xs) n
+      | isSolved (answers x secret) = (x, n)
+      | otherwise = go xs (n + 1)
+    go [] _ = error "Should not happen"
 
+-- Calculate new possible states from answer.
+-- This takes maximum 9 iterations.
 solve2 :: [Peg] -> [Peg] -> ([Peg], Int)
-solve2 guess secret = solve2' guess allPossibilities 1
+solve2 guess secret = go guess allPossibilities 1
   where
-    solve2' :: [Peg] -> [[Peg]] -> Int -> ([Peg], Int)
-    solve2' g legal acc
-      | solved ans = (g, acc)
-      | otherwise = solve2' g' legal' (acc + 1)
+    go g xs n
+      | isSolved ans = (g, n)
+      | otherwise = go g' xs' (n + 1)
       where
         ans = answers g secret
-        g' = head legal'
-        legal' = legalPossibilities (g, ans) legal
-
-solved :: Answer -> Bool
-solved = (==) (4, 0)
+        g' = head xs'
+        xs' = legalPossibilities (g, ans) xs

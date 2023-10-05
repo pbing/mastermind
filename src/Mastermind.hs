@@ -16,10 +16,7 @@ allPossibilities :: [[Peg]]
 allPossibilities = [[a, b, c, d] | a <- allColors, b <- allColors, c <- allColors, d <- allColors]
 
 legalPossibilities :: State -> [[Peg]] -> [[Peg]]
-legalPossibilities (guess, ans) = filter legal
-  where
-    legal :: [Peg] -> Bool
-    legal xs = answers guess xs == ans
+legalPossibilities (guess, ans) = filter ((ans ==) . answers guess)
 
 -- https://mathworld.wolfram.com/Mastermind.html
 answers :: [Peg] -> [Peg] -> Answer
@@ -30,6 +27,10 @@ answers guess code = (b, w)
     ci = countColors code
     gi = countColors guess
     countColors xs = map ((\fn -> fn xs) . count . (==)) allColors
+
+-- check for solved puzzle
+isSolved :: Answer -> Bool
+isSolved = (==) (4, 0)
 
 -- return number of list elements when predicate is true
 count :: (a -> Bool) -> [a] -> Int
